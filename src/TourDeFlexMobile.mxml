@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+-->
+
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+							xmlns:s="library://ns.adobe.com/flex/spark" applicationDPI="160" applicationComplete="init(event)" frameRate="60" 
+							splashScreenImage="@Embed('assets/images/splash.png')" splashScreenScaleMode="zoom">
+	
+	<fx:Style source="styles.css"/>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+							
+			import views.HomeView;
+			import views.NewsView;
+			import views.ComponentsView;
+			import views.ShowcaseView;
+			import views.VideosView;
+				
+			private var isOpen:Boolean;	
+			
+			[Bindable]
+			private var currentStageWidth:Number;
+		
+			[Bindable]
+			private var currentStageHeight:Number;
+			
+			protected function init(event:FlexEvent):void
+			{
+				stage.addEventListener(Event.RESIZE, orientationHandler);
+				
+				currentStageWidth = stage.stageWidth*-1;
+				lateralMenu.x = currentStageWidth;
+				currentStageHeight = navigator.height-45;
+				lateralMenu.height = currentStageHeight;			
+				lateralMenu.x = currentStageWidth;
+				isOpen = false;
+			}
+			
+			private function orientationHandler(event:Event):void{
+				currentStageWidth = stage.stageWidth*-1;
+				
+				if(isOpen == false){
+					lateralMenu.x = currentStageWidth;
+				}
+				
+				currentStageHeight = navigator.height-45;
+				lateralMenu.height = currentStageHeight;	
+				
+				trace(lateralMenu.height);
+			}
+			
+			protected function menuHandler(event:MouseEvent):void
+			{
+				
+				if(isOpen == true){
+					moveOut.play();
+					isOpen = false;
+				} else if(isOpen == false){
+					moveIn.play();
+					isOpen = true;
+				}
+			}
+			
+			protected function changeHandler(event:IndexChangeEvent):void
+			{
+				isOpen = false;
+				moveOut.play();
+				
+				navigator.pushView(componentsList.selectedItem.view);
+			}
+			
+			protected function menuBackgroundHandler(event:MouseEvent):void
+			{
+				isOpen = false;
+				moveOut.play();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:Move id="moveIn" duration="300" target="{lateralMenu}" xTo="0"/>
+		<s:Move id="moveOut" duration="300" target="{lateralMenu}" xTo="{currentStageWidth}"/>
+	</fx:Declarations>
+	
+	<s:ViewNavigator id="navigator" firstView="views.NewsView" width="100%" height="100%">
+		<s:navigationContent>
+			<s:Button icon="@Embed('assets/images/logo.png')" height="36" width="110" label="Menu" click="menuHandler(event)"/>
+		</s:navigationContent>
+	</s:ViewNavigator>
+	
+	<s:Group id="lateralMenu" width="100%" y="45">
+		<s:Graphic width="100%" height="100%" click="menuBackgroundHandler(event)">
+			<s:BitmapImage width="100%" height="100%" scaleMode="zoom" alpha="0" source="@Embed('assets/images/bg.png')"/>
+		</s:Graphic>
+		
+		<s:List id="componentsList" selectedIndex="0" itemRenderer="renderers.MenuRenderer" width="200" height="100%" change="changeHandler(event)">
+			<s:ArrayList>
+				<fx:Object label="NEWS" icon="assets/icons/rss.png" type="view" view="{NewsView}"/>
+				<fx:Object label="USERS@FLEX" icon="assets/icons/people.png" type="view" view="{HomeView}"/>
+				<fx:Object label="DEV@FLEX" icon="assets/icons/envelope-closed.png" type="view" view="{HomeView}"/>
+				<fx:Object label="COMPONENTS" icon="assets/icons/puzzle-piece.png" type="view" view="{ComponentsView}"/>
+				<fx:Object label="WIKI" icon="assets/icons/book.png" type="view" view="{HomeView}"/>
+				<fx:Object label="SHOWCASE" icon="assets/icons/briefcase.png" type="view" view="{ShowcaseView}"/>				
+				<fx:Object label="VIDEOS" icon="assets/icons/video.png" type="view" view="{VideosView}"/>
+				<fx:Object label="TOOLS" icon="assets/icons/wrench.png" type="view" view="{HomeView}"/>				
+				<fx:Object label="BUG TRACKER" icon="assets/icons/bug.png" type="view" view="{HomeView}"/>
+			</s:ArrayList>
+		</s:List>
+	</s:Group>
+	
+	
+</s:Application>

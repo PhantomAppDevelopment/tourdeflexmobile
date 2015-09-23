@@ -22,7 +22,7 @@
 			
 			protected function selectApp(event:IndexChangeEvent):void
 			{
-				navigator.pushView(ShowcaseDettails, showcaseList.selectedItem);
+				navigator.pushView(ShowcaseDetails, showcaseList.selectedItem);
 			}
 			
 		]]>

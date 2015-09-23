@@ -4,7 +4,6 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayList;
-			import mx.utils.ObjectUtil;
 			
 			import spark.components.Label;
 			import spark.events.ViewNavigatorEvent;
@@ -19,21 +18,17 @@
 				if(data.@website){
 					websiteTxt.text = data.@website;
 				} else {
-					
+					//Do Nothing
 				}
 				
 				descriptionTxt.text = data.description;
-				
 				imagesArray = new Array();
-				
-				
+								
 				for each (var image:* in data.images.image){
-					trace("http://flex.apache.org/showcase/images/"+data.images.@baseDir+"/prev/"+image.@file);
 					imagesArray.push("http://flex.apache.org/showcase/images/"+data.images.@baseDir+"/prev/"+image.@file);
 				}
 				
-				thumbnailList.dataProvider = new ArrayList(imagesArray);
-								
+				thumbnailList.dataProvider = new ArrayList(imagesArray);								
 			}
 			
 		]]>
@@ -70,5 +65,4 @@
 			</s:icon>
 		</s:Button>
 	</s:navigationContent>
-
 </s:View>

@@ -19,61 +19,64 @@ limitations under the License.
 -->
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
-		title="CameraUI" >
+		title="CameraRoll" >
 	
 	<fx:Script>
 		<![CDATA[
 			
-			private var cameraUI:CameraUI;
 			private var mpLoader:Loader;
 			
-			protected function launchCameraUI(event:MouseEvent):void
+			protected function launchcameraRoll(event:MouseEvent):void
 			{
-				if( CameraUI.isSupported )
+				var cameraRoll:CameraRoll = new CameraRoll();
+				
+				if( CameraRoll.supportsBrowseForImage )
 				{
-					cameraUI= new CameraUI();
-					cameraUI.addEventListener(MediaEvent.COMPLETE, onCameraUIComplete);
-					cameraUI.addEventListener(Event.CANCEL, onCameraUICanceled);
-					cameraUI.addEventListener(ErrorEvent.ERROR, onCameraError);
-					cameraUI.launch(MediaType.IMAGE);
+					cameraRoll.addEventListener(MediaEvent.SELECT, oncameraRollComplete);
+					cameraRoll.addEventListener(Event.CANCEL, oncameraRollCanceled);
+					cameraRoll.addEventListener(ErrorEvent.ERROR, onCameraError);
+					cameraRoll.browseForImage();
 				}
 				else
 				{
-					trace( "Camera interface is not supported.");
+					trace( "CameraRoll interface is not supported.");
 				}		
 			}
 			
-			private function onCameraUIComplete(e:MediaEvent):void
+			private function oncameraRollComplete(e:MediaEvent):void
 			{
-				/*cameraUI.removeEventListener(MediaEvent.COMPLETE, onCameraUIComplete);
-				cameraUI.removeEventListener(Event.CANCEL, onCameraUICanceled);
-				cameraUI.removeEventListener(ErrorEvent.ERROR, onCameraError);*/
-				
 				var mediaPromise:MediaPromise = e.data;
 				
 				this.mpLoader = new Loader();
 				this.mpLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onMediaPromiseLoaded);
-				/*this.mpLoader.addEventListener(IOErrorEvent.IO_ERROR, onMediaPromiseLoadError);*/
+				this.mpLoader.addEventListener(IOErrorEvent.IO_ERROR, onMediaPromiseLoadError);
 				this.mpLoader.loadFilePromise(mediaPromise);
 			}
 			
 			private function onMediaPromiseLoaded(e:Event):void
 			{
 				var mpLoaderInfo:LoaderInfo = e.target as LoaderInfo;
-				mpLoaderInfo.removeEventListener(Event.COMPLETE, onMediaPromiseLoaded);
-				/*	mpLoaderInfo.loader.removeEventListener(IOErrorEvent.IO_ERROR, onMediaPromiseLoadError);*/
+				
+				mpLoaderInfo.removeEventListener(Event.COMPLETE, onMediaPromiseLoaded);				
+				mpLoaderInfo.loader.removeEventListener(IOErrorEvent.IO_ERROR, onMediaPromiseLoadError);
+				
 				this.image.source = mpLoaderInfo.loader;
 			}
 			
-			protected function onCameraUICanceled(event:Event):void
+			protected function oncameraRollCanceled(event:Event):void
 			{
-				trace("Camera canceled");
+				trace("CameraRoll canceled");
 			}
 			
 			
 			protected function onCameraError(event:ErrorEvent):void
 			{
-				trace();
+				trace("Error");
+			}
+			
+			protected function onMediaPromiseLoadError(error:IOErrorEvent):void
+			{
+				trace("Media Promise Error");
 			}
 			
 			protected function buttonHandler(event:MouseEvent):void
@@ -108,14 +111,13 @@ limitations under the License.
 		</s:fill>
 	</s:Rect>
 	
-	<s:Button label="Launch Camera UI" click="launchCameraUI(event)" horizontalCenter="0" verticalCenter="0" />
+	<s:Button label="Browse Image" click="launchcameraRoll(event)" horizontalCenter="0" verticalCenter="0" />
 	<s:Image id="image" scaleMode="letterbox" top="15" left="15" right="15" bottom="15" />
 	
-	<s:TextArea includeIn="InfoState" selectable="false" left="10" right="10" top="10" bottom="10" editable="false" text="The CameraUI class allows you to capture a still image or video using the default camera application on a device.
-				&#xd; &#xd;The launch() method requests that the device open the default camera application. The captured image or video is available in the MediaEvent object dispatched for the complete event. Since the default camera application can save the image or video in a variety of formats, there is no guarantee that returned media object can be loaded and displayed by the AIR runtime.
-				&#xd; &#xd;On some platforms, the media object returned by the camera is accessible as a file-based media promise. On others, the media promise is not file-based and the file and relativePath properties of the MediaPromise object are null. Do not use these properties in code that is used on more than one platform.
-				&#xd; &#xd;On Android, the default camera application does not open if the external storage card is not available (such as when the user has mounted the card as a USB mass storage device). In addition, the AIR application that launches the camera loses focus. If the device runs low on resources, the AIR application can be terminated by the operating system before the media capture is complete.
-				&#xd; &#xd;On some platforms, the media object is automatically stored in the device media library. On platforms on which images and video are not automatically stored by the default camera application, you can use the CameraRoll addBitmapData() function to store the media object."/>
+	<s:TextArea includeIn="InfoState" selectable="false" left="10" right="10" top="10" bottom="10" editable="false" text="The CameraRoll class allows you to access image data in the system media library or camera roll.
+				&#xd;&#xd;AIR profile support: This feature is supported on mobile devices, but it is not supported on desktop operating systems or AIR for TV devices. See AIR Profile Support for more information regarding API support across multiple profiles.
+				&#xd;&#xd;The CameraRoll.addBitmapData() method adds an image to the device's dedicated media library. To check at run time whether your application supports the CameraRoll.addBitmapData() method, check the CameraRoll.supportsAddBitmapData property.
+				&#xd;&#xd;The CameraRoll.browseForImage() method opens an image-choosing dialog that allows a user to choose an image in the media library. When the user selects an image, the CameraRoll object dispatches a select event. Use the MediaEvent object dispatched for this event to access the chosen image. To check at run time whether your application supports the CameraRoll.browseForImage() method, check the CameraRoll.supportsBrowseForImage property."/>
 	
 	<s:navigationContent>
 		<s:Button click="navigator.popView()">

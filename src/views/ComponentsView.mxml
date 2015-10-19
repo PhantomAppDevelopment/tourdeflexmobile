@@ -23,6 +23,8 @@
 			import LayoutViews.TileLayoutView;
 			
 			import AIRViews.AccelerometerView;
+			import AIRViews.CameraRollView;
+			import AIRViews.CameraUIView;
 			import AIRViews.GeolocationView;
 			import AIRViews.NativeAppView;
 			import AIRViews.SQLiteView;
@@ -55,6 +57,8 @@
 				<fx:Object label="VerticalLayout" view="{VerticalLayoutView}"/>
 				<fx:Object label="TileLayout" view="{TileLayoutView}"/>
 				<fx:Object label="Accelerometer" view="{AccelerometerView}"/>
+				<fx:Object label="CameraRoll" view="{CameraRollView}"/>
+				<fx:Object label="CameraUI" view="{CameraUIView}"/>
 				<fx:Object label="Geolocation" view="{GeolocationView}"/>
 				<fx:Object label="NativeApp" view="{NativeAppView}"/>
 				<fx:Object label="SQLite" view="{SQLiteView}"/>

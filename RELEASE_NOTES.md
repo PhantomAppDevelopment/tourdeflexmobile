@@ -1,6 +1,12 @@
 Tour de Flex Mobile
 ===================
 
+0.4.1 [10/19/2015]
+
+Enabled CameraUI View
+Added CameraRoll View
+Cleaned up the main View
+
 0.4.0 [09/22/2015]
 
 Improved News View
